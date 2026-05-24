@@ -17,7 +17,7 @@ teams may want `0.0`.
 
 ### Scenario: Default epsilon of 0.01 — delta below epsilon is Unchanged
 
-```
+```gherkin
 Given a baseline where "foo" has CRAP score 10.000
 And   the current run shows "foo" with CRAP score 10.005  (delta = 0.005)
 When  I run `cargo crap --baseline baseline.json --fail-regression`
@@ -27,7 +27,7 @@ And   the command exits with code 0
 
 ### Scenario: Default epsilon of 0.01 — delta above epsilon is Regressed
 
-```
+```gherkin
 Given a baseline where "foo" has CRAP score 10.000
 And   the current run shows "foo" with CRAP score 10.020  (delta = 0.020)
 When  I run `cargo crap --baseline baseline.json --fail-regression`
@@ -37,7 +37,7 @@ And   the command exits with code 1
 
 ### Scenario: --epsilon 0.5 tolerates larger drift
 
-```
+```gherkin
 Given a baseline where "foo" has CRAP score 10.000
 And   the current run shows "foo" with CRAP score 10.4  (delta = 0.4)
 When  I run `cargo crap --baseline baseline.json --epsilon 0.5 --fail-regression`
@@ -47,7 +47,7 @@ And   the command exits with code 0
 
 ### Scenario: --epsilon 0.0 catches any score increase
 
-```
+```gherkin
 Given a baseline where "foo" has CRAP score 10.000
 And   the current run shows "foo" with CRAP score 10.001  (delta = 0.001)
 When  I run `cargo crap --baseline baseline.json --epsilon 0.0 --fail-regression`
@@ -57,7 +57,7 @@ And   the command exits with code 1
 
 ### Scenario: Negative --epsilon is rejected
 
-```
+```gherkin
 Given I run `cargo crap --baseline baseline.json --epsilon -1.0`
 Then  the command exits with a non-zero status
 And   stderr contains an error about invalid epsilon value
@@ -65,7 +65,7 @@ And   stderr contains an error about invalid epsilon value
 
 ### Scenario: --epsilon configurable in .cargo-crap.toml
 
-```
+```gherkin
 Given a .cargo-crap.toml containing:
       epsilon = 0.5
 When  I run `cargo crap --baseline baseline.json`
@@ -74,7 +74,7 @@ Then  0.5 is used as the regression threshold
 
 ### Scenario: CLI --epsilon overrides config file
 
-```
+```gherkin
 Given a .cargo-crap.toml containing epsilon = 0.5
 When  I run `cargo crap --baseline baseline.json --epsilon 0.0`
 Then  0.0 is used as the regression threshold

@@ -16,7 +16,7 @@ consumers guard against breaking changes.
 
 ### Scenario: JSON output contains a version field
 
-```
+```gherkin
 Given a Rust project with an LCOV file
 When  I run `cargo crap --format json`
 Then  the output is a JSON object (not a bare array)
@@ -27,7 +27,7 @@ And   it contains a top-level "entries" key holding the function array
 
 ### Scenario: Version field survives --output to file
 
-```
+```gherkin
 Given I run `cargo crap --format json --output out.json`
 When  I read out.json
 Then  the file contains the "version" field at the top level
@@ -35,7 +35,7 @@ Then  the file contains the "version" field at the top level
 
 ### Scenario: Baseline loading is unaffected by version field
 
-```
+```gherkin
 Given a JSON file produced by a previous run that contains a "version" field
 When  I pass it as `--baseline`
 Then  cargo-crap loads it successfully without error
@@ -43,7 +43,7 @@ Then  cargo-crap loads it successfully without error
 
 ### Scenario: JSON schema is still valid after the wrapper object
 
-```
+```gherkin
 Given the wrapped JSON output { "version": "...", "entries": [...] }
 When  I validate it against the published JSON schema (spec 03)
 Then  validation passes

@@ -17,7 +17,7 @@ ecosystem without any extra tooling.
 
 ### Scenario: --format sarif produces valid SARIF 2.1.0 JSON
 
-```
+```gherkin
 Given a Rust project with crappy functions
 When  I run `cargo crap --format sarif`
 Then  the output is valid JSON
@@ -28,7 +28,7 @@ And   the "version" field is "2.1.0"
 
 ### Scenario: Each crappy function appears as a SARIF result
 
-```
+```gherkin
 Given a function "crappy" in src/lib.rs at line 24 with CRAP score 156.0
 And   the threshold is 30
 When  I run `cargo crap --format sarif`
@@ -40,7 +40,7 @@ And   the message includes the CRAP score
 
 ### Scenario: Clean functions do not appear as SARIF results
 
-```
+```gherkin
 Given a function with CRAP score below the threshold
 When  I run `cargo crap --format sarif`
 Then  that function does not appear in the SARIF results array
@@ -48,7 +48,7 @@ Then  that function does not appear in the SARIF results array
 
 ### Scenario: SARIF output is uploadable to GitHub code scanning
 
-```
+```gherkin
 Given a SARIF file produced by `cargo crap --format sarif --output results.sarif`
 When  uploaded via `gh code-scanning upload-results --sarif results.sarif`
 Then  crappy functions appear in the repository's Security → Code scanning tab
@@ -56,7 +56,7 @@ Then  crappy functions appear in the repository's Security → Code scanning tab
 
 ### Scenario: --fail-above still works with SARIF format
 
-```
+```gherkin
 Given a project with crappy functions
 When  I run `cargo crap --format sarif --fail-above`
 Then  the command exits with code 1
@@ -65,7 +65,7 @@ And   the SARIF output is written to stdout (or --output file)
 
 ### Scenario: Empty results produce a valid SARIF document
 
-```
+```gherkin
 Given a project with no functions exceeding the threshold
 When  I run `cargo crap --format sarif`
 Then  the output is valid SARIF with an empty results array

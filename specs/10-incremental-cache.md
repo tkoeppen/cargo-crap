@@ -17,7 +17,7 @@ for the common case of analyzing a small change.
 
 ### Scenario: Second run on unchanged files uses the cache
 
-```
+```gherkin
 Given a large Rust project
 And   I have run `cargo crap` once (cache is populated)
 When  I run `cargo crap` again without modifying any source files
@@ -27,7 +27,7 @@ And   the results are byte-for-byte identical to the first run
 
 ### Scenario: Cache is invalidated when a file is modified
 
-```
+```gherkin
 Given a cached analysis run
 When  I modify src/lib.rs (e.g. add a branch)
 And   run `cargo crap` again
@@ -37,7 +37,7 @@ And   other unchanged files still use the cached results
 
 ### Scenario: Cache is invalidated when a file is deleted
 
-```
+```gherkin
 Given a cached result that includes src/old.rs
 When  src/old.rs is deleted
 And   I run `cargo crap` again
@@ -47,7 +47,7 @@ And   no stale cache entry causes an error
 
 ### Scenario: --no-cache bypasses the cache entirely
 
-```
+```gherkin
 Given a populated cache
 When  I run `cargo crap --no-cache`
 Then  all files are re-analyzed from scratch
@@ -56,7 +56,7 @@ And   the cache is not read or written
 
 ### Scenario: Cache survives across working directory changes
 
-```
+```gherkin
 Given a populated cache stored in the project's target directory
 When  I run `cargo crap` from a different working directory (e.g. a subdirectory)
 Then  the cache is still found and used
@@ -64,7 +64,7 @@ Then  the cache is still found and used
 
 ### Scenario: Corrupted cache file is silently ignored
 
-```
+```gherkin
 Given a cache file that has been corrupted (invalid bytes)
 When  I run `cargo crap`
 Then  the command falls back to a full re-analysis

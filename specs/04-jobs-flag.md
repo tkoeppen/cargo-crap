@@ -16,7 +16,7 @@ contention. `--jobs N` lets operators bound the parallelism explicitly.
 
 ### Scenario: --jobs 1 forces single-threaded analysis
 
-```
+```gherkin
 Given a Rust project
 When  I run `cargo crap --jobs 1`
 Then  the command exits successfully
@@ -25,7 +25,7 @@ And   output is identical to a run without --jobs
 
 ### Scenario: --jobs 4 completes successfully
 
-```
+```gherkin
 Given a Rust project
 When  I run `cargo crap --jobs 4`
 Then  the command exits successfully
@@ -34,7 +34,7 @@ And   results are identical to a run without --jobs
 
 ### Scenario: --jobs 0 is rejected
 
-```
+```gherkin
 Given I run `cargo crap --jobs 0`
 Then  the command exits with a non-zero status
 And   stderr contains an error about invalid job count
@@ -42,7 +42,7 @@ And   stderr contains an error about invalid job count
 
 ### Scenario: --jobs configurable via .cargo-crap.toml
 
-```
+```gherkin
 Given a .cargo-crap.toml containing:
       jobs = 2
 When  I run `cargo crap` without --jobs
@@ -51,7 +51,7 @@ Then  analysis uses at most 2 threads
 
 ### Scenario: CLI --jobs overrides config file
 
-```
+```gherkin
 Given a .cargo-crap.toml containing jobs = 2
 When  I run `cargo crap --jobs 8`
 Then  analysis uses at most 8 threads

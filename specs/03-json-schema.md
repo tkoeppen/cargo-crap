@@ -16,7 +16,7 @@ against or generate types from.
 
 ### Scenario: JSON output includes a $schema key
 
-```
+```gherkin
 Given I run `cargo crap --format json`
 Then  the top-level JSON object contains a "$schema" key
 And   the value is a stable HTTPS URL to the published schema
@@ -24,7 +24,7 @@ And   the value is a stable HTTPS URL to the published schema
 
 ### Scenario: Published schema validates actual output
 
-```
+```gherkin
 Given the schema at the URL referenced by "$schema"
 And   the JSON produced by `cargo crap --format json` against a real project
 When  I validate the JSON against the schema
@@ -33,7 +33,7 @@ Then  validation passes with no errors
 
 ### Scenario: Published schema validates an empty entries list
 
-```
+```gherkin
 Given a project with all functions excluded via --exclude
 When  I run `cargo crap --format json`
 Then  the output (with an empty "entries" array) still validates against the schema
@@ -41,7 +41,7 @@ Then  the output (with an empty "entries" array) still validates against the sch
 
 ### Scenario: Schema documents every field of a CrapEntry
 
-```
+```gherkin
 Given the published schema
 Then  it describes the following fields for each entry:
       - file (string, path)
@@ -54,7 +54,7 @@ Then  it describes the following fields for each entry:
 
 ### Scenario: Delta mode output validates against a separate schema
 
-```
+```gherkin
 Given I run `cargo crap --format json --baseline baseline.json`
 Then  the output validates against a delta-specific schema
 And   each entry additionally contains: baseline_crap, delta, status fields

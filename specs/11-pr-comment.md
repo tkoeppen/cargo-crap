@@ -11,6 +11,7 @@ whether CRAP scores regressed. A sticky comment posted (and updated) by cargo-cr
 on every PR makes the delta immediately visible without opening any logs.
 
 The PR comment has different constraints than a full markdown report:
+
 - GitHub caps comment bodies at 65,536 characters.
 - Reviewers (often on mobile) need to answer "did this PR make things worse?" in
   one screen, not scroll through every function in the codebase.
@@ -35,7 +36,7 @@ The plumbing pieces:
 
 ### Scenario: Markdown output starts with the hidden marker
 
-```
+```gherkin
 Given I run `cargo crap --format markdown`
 When  I read the output
 Then  the first line is exactly `<!-- cargo-crap-report -->`
@@ -43,7 +44,7 @@ Then  the first line is exactly `<!-- cargo-crap-report -->`
 
 ### Scenario: PR-comment output starts with the hidden marker
 
-```
+```gherkin
 Given I run `cargo crap --format pr-comment`
 When  I read the output
 Then  the first line is exactly `<!-- cargo-crap-report -->`
@@ -51,7 +52,7 @@ Then  the first line is exactly `<!-- cargo-crap-report -->`
 
 ### Scenario: Marker is present in delta pr-comment output
 
-```
+```gherkin
 Given I run `cargo crap --format pr-comment --baseline baseline.json`
 When  I read the output
 Then  the first line is exactly `<!-- cargo-crap-report -->`
@@ -60,7 +61,7 @@ And   the output contains the delta breakdown line
 
 ### Scenario: Marker is present when writing to --output file
 
-```
+```gherkin
 Given I run `cargo crap --format pr-comment --output report.md`
 When  I read report.md
 Then  the first line is `<!-- cargo-crap-report -->`
@@ -68,7 +69,7 @@ Then  the first line is `<!-- cargo-crap-report -->`
 
 ### Scenario: First PR posts a new comment
 
-```
+```gherkin
 Given a pull request with no prior cargo-crap comment
 When  the CI self_score job completes on that PR
 Then  a new comment is posted to the PR
@@ -78,7 +79,7 @@ And   the comment contains the regression/new/improvement summary line
 
 ### Scenario: Subsequent push updates the existing comment
 
-```
+```gherkin
 Given a pull request that already has a cargo-crap comment
 When  the developer pushes a new commit and CI runs again
 Then  the existing comment is updated in place (not a second comment posted)
@@ -87,7 +88,7 @@ And   the comment reflects the scores from the latest run
 
 ### Scenario: Regressed PR comment shows a warning header
 
-```
+```gherkin
 Given a PR where at least one function's CRAP score increased
 When  the CI self_score job runs
 Then  the posted comment starts with a "⚠️ N CRAP regression(s) detected" heading
@@ -97,7 +98,7 @@ And   the regressed functions appear in the primary table at the top of the comm
 
 ### Scenario: Clean PR comment shows a pass header
 
-```
+```gherkin
 Given a PR where no function's CRAP score increased
 When  the CI self_score job runs
 Then  the posted comment starts with a "✅ No CRAP regressions" heading
@@ -106,7 +107,7 @@ And   the same one-line breakdown appears below the heading
 
 ### Scenario: No baseline available — comment still posted
 
-```
+```gherkin
 Given a PR opened on a repo that has no saved baseline artifact
 When  the CI self_score job runs with `continue-on-error: true` on the download step
 Then  a comment is posted showing only the absolute threshold result
@@ -116,7 +117,7 @@ And   the comment contains the line "No baseline available — showing absolute 
 
 ### Scenario: Unchanged rows are hidden from the delta comment
 
-```
+```gherkin
 Given a baseline and a current run where some functions are Unchanged
 When  I run `cargo crap --format pr-comment --baseline baseline.json`
 Then  no Unchanged row appears in any rendered table
@@ -125,7 +126,7 @@ And   the unchanged count still appears in the breakdown line
 
 ### Scenario: Regressions and New entries appear in the primary table
 
-```
+```gherkin
 Given a delta with regressions and new functions
 When  the pr-comment renders
 Then  the primary table contains all Regressed and New rows (subject to the row cap)
@@ -136,7 +137,7 @@ And   New rows are sorted by CRAP descending
 
 ### Scenario: Improvements are placed in a collapsed details section
 
-```
+```gherkin
 Given a delta with at least one Improved entry
 When  the pr-comment renders
 Then  Improved rows appear inside a `<details>` block titled `↓ N improved`
@@ -145,7 +146,7 @@ And   the block is collapsed by default (no `open` attribute)
 
 ### Scenario: Removed entries are placed in a collapsed details section
 
-```
+```gherkin
 Given a delta with at least one Removed entry
 When  the pr-comment renders
 Then  Removed rows appear inside a `<details>` block titled `— N removed`
@@ -153,7 +154,7 @@ Then  Removed rows appear inside a `<details>` block titled `— N removed`
 
 ### Scenario: Hot-spots-above-threshold digest is included
 
-```
+```gherkin
 Given a delta where at least one Unchanged entry has CRAP > threshold
 When  the pr-comment renders
 Then  a `<details>` block titled `🔥 Top hot spots above threshold` is included
@@ -163,7 +164,7 @@ And   it is omitted entirely when no such entries exist
 
 ### Scenario: Each section is capped at 25 rows
 
-```
+```gherkin
 Given a delta with more than 25 Regressed entries (or any other category)
 When  the pr-comment renders
 Then  that section's table contains exactly 25 rows
@@ -173,7 +174,7 @@ And   N equals the number of omitted rows
 
 ### Scenario: Paths are stripped of their longest common prefix
 
-```
+```gherkin
 Given two or more rendered entries whose file paths share a common path-component prefix
 When  the pr-comment renders
 Then  every Location cell has that prefix removed
@@ -182,7 +183,7 @@ And   no Location cell starts with `/`
 
 ### Scenario: Single-entry (or no-overlap) paths fall back to CWD stripping
 
-```
+```gherkin
 Given fewer than two rendered entries (or entries that share no path-component prefix)
 And   every rendered file path is under the current working directory
 When  the pr-comment renders
@@ -192,7 +193,7 @@ And   no Location cell starts with `/`
 
 ### Scenario: Path outside CWD with no common prefix is left untouched
 
-```
+```gherkin
 Given a rendered entry whose file path is NOT under the current working directory
 And   no longest-common-prefix can be derived from other rendered entries
 When  the pr-comment renders
@@ -201,7 +202,7 @@ Then  the Location cell is the entry's path verbatim
 
 ### Scenario: Absolute markdown still emits the full table
 
-```
+```gherkin
 Given a baseline and a current run with hundreds of Unchanged entries
 When  I run `cargo crap --format markdown --baseline baseline.json`
 Then  the output contains every entry (Regressed, New, Improved, Unchanged, Removed)
@@ -252,7 +253,7 @@ And   no row cap is applied
 
 ```rust
 const MAX_ROWS_PER_SECTION: usize = 25;
-```
+```gherkin
 
 ### CI changes (`.github/workflows/ci.yml`, `self_score` job)
 
@@ -310,6 +311,6 @@ The workflow must declare `pull-requests: write` at the job level:
 self_score:
   permissions:
     pull-requests: write
-```
+```gherkin
 
 Without this the `createComment` / `updateComment` calls fail with 403.

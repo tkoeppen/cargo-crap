@@ -17,7 +17,7 @@ use `--exclude` which also skips the files from CRAP scoring entirely.
 
 ### Scenario: --allow with file glob suppresses matching functions
 
-```
+```gherkin
 Given a project with functions in src/generated/mod.rs
 When  I run `cargo crap --allow 'src/generated/**'`
 Then  functions in src/generated/ do not appear in the output
@@ -26,7 +26,7 @@ And   functions in other files are still shown
 
 ### Scenario: --allow file glob and function name pattern coexist
 
-```
+```gherkin
 Given a project
 When  I run `cargo crap --allow 'src/generated/**' --allow 'my_helper'`
 Then  functions in src/generated/ are suppressed
@@ -35,7 +35,7 @@ And   any function named my_helper is also suppressed
 
 ### Scenario: --allow file glob does not affect --fail-above count
 
-```
+```gherkin
 Given a project where only suppressed files contain crappy functions
 When  I run `cargo crap --allow 'src/generated/**' --fail-above`
 Then  the command exits with code 0
@@ -43,7 +43,7 @@ Then  the command exits with code 0
 
 ### Scenario: File pattern in .cargo-crap.toml is respected
 
-```
+```gherkin
 Given a .cargo-crap.toml containing:
       allow = ["tests/**", "benches/**"]
 When  I run `cargo crap`
@@ -52,7 +52,7 @@ Then  functions in tests/ and benches/ are not shown in the output
 
 ### Scenario: --allow file glob is distinct from --exclude
 
-```
+```gherkin
 Given a file src/generated/foo.rs with complex functions
 When  I run `cargo crap --allow 'src/generated/**'`
 Then  the file is still walked and analyzed (complexity is computed)

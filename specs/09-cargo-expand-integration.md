@@ -17,7 +17,7 @@ output, giving accurate CC for macro-heavy codebases.
 
 ### Scenario: --expanded reveals complexity from derive macros
 
-```
+```gherkin
 Given a struct with #[derive(Builder)] that generates 10+ methods
 And   without --expanded those methods do not appear in the output
 When  I run `cargo crap --expanded`
@@ -26,7 +26,7 @@ Then  the generated builder methods appear in the output with their CRAP scores
 
 ### Scenario: --expanded requires cargo-expand to be installed
 
-```
+```gherkin
 Given cargo-expand is not installed on the system
 When  I run `cargo crap --expanded`
 Then  the command exits with a non-zero status
@@ -35,7 +35,7 @@ And   stderr suggests running `cargo install cargo-expand`
 
 ### Scenario: Without --expanded, macro-generated code is not shown
 
-```
+```gherkin
 Given a struct with #[derive(Debug, Clone, PartialEq)]
 When  I run `cargo crap` without --expanded
 Then  the derived Debug/Clone/PartialEq impls do not appear in the output
@@ -43,7 +43,7 @@ Then  the derived Debug/Clone/PartialEq impls do not appear in the output
 
 ### Scenario: --expanded and --lcov work together
 
-```
+```gherkin
 Given a project using proc-macros
 And   an LCOV file generated from the expanded build
 When  I run `cargo crap --expanded --lcov lcov.info`
@@ -52,7 +52,7 @@ Then  coverage data is matched to expanded function spans
 
 ### Scenario: --expanded is slower and warns the user
 
-```
+```gherkin
 Given a large project
 When  I run `cargo crap --expanded`
 Then  a progress indicator or note indicates that expansion may take extra time

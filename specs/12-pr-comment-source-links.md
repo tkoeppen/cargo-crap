@@ -9,7 +9,7 @@
 The `pr-comment` and `markdown` renderers currently print the function name and
 its `file:line` as plain code spans:
 
-```
+```gherkin
 | ✓ | 2.0 | NEW | 1 | — | `compile_schema` | `:160` |
 ```
 
@@ -22,7 +22,7 @@ This spec adds optional GitHub-aware source links. When the renderer is given
 a repository URL and a commit ref, it wraps both the Function name and the
 Location string in markdown links pointing at the file/line on GitHub:
 
-```
+```gherkin
 | ✓ | 2.0 | NEW | 1 | — | [`compile_schema`](https://github.com/owner/repo/blob/<sha>/src/schema.rs#L160) | [`src/schema.rs:160`](https://github.com/owner/repo/blob/<sha>/src/schema.rs#L160) |
 ```
 
@@ -35,7 +35,7 @@ context still produce the same output as today.
 
 ### Scenario: No flags → no links (backwards compatible)
 
-```
+```gherkin
 Given I run `cargo crap --format pr-comment` with neither --repo-url nor --commit-ref set
 And   no GITHUB_SERVER_URL / GITHUB_REPOSITORY / GITHUB_SHA env vars are present
 When  I read the output
@@ -45,7 +45,7 @@ And   no Location cell is wrapped in a markdown link
 
 ### Scenario: Both flags → Function and Location are links
 
-```
+```gherkin
 Given I run `cargo crap --format pr-comment --repo-url https://github.com/owner/repo --commit-ref abc123`
 When  I read the output
 Then  every rendered Function cell has the form ``[`<name>`](<repo-url>/blob/<ref>/<path>#L<line>)``
@@ -54,7 +54,7 @@ And   every rendered Location cell has the form ``[`<displayed-loc>`](<repo-url>
 
 ### Scenario: Link URL uses the CWD-relative path (NOT the display LCP)
 
-```
+```gherkin
 Given two or more rendered entries whose AST-discovered paths are
       absolute and live under CWD (e.g. cargo metadata under --workspace
       returns `/home/runner/work/repo/repo/src/main.rs` etc.)
@@ -72,7 +72,7 @@ And   the URL contains no leading `/` between `<ref>/` and the path
 
 ### Scenario: Path that cannot be made repo-relative falls back to plain text
 
-```
+```gherkin
 Given an entry whose path is NOT under CWD and shares no LCP with other
       rendered entries (so prefix-stripping leaves it absolute)
 And   --repo-url + --commit-ref are set
@@ -84,7 +84,7 @@ And   the row still renders with plain code spans
 
 ### Scenario: Trailing slash on --repo-url is normalized
 
-```
+```gherkin
 Given --repo-url is `https://github.com/owner/repo/`
 When  the pr-comment renders
 Then  link targets contain exactly one `/blob/` separator (no `//blob/`)
@@ -92,7 +92,7 @@ Then  link targets contain exactly one `/blob/` separator (no `//blob/`)
 
 ### Scenario: Only one flag → no links
 
-```
+```gherkin
 Given --repo-url is set but --commit-ref is not (or vice versa)
 When  the pr-comment renders
 Then  no markdown links are emitted (graceful fallback to plain code spans)
@@ -100,7 +100,7 @@ Then  no markdown links are emitted (graceful fallback to plain code spans)
 
 ### Scenario: Defaults from GitHub Actions env vars
 
-```
+```gherkin
 Given GITHUB_SERVER_URL=https://github.com, GITHUB_REPOSITORY=owner/repo, GITHUB_SHA=abc123 are set
 And   neither --repo-url nor --commit-ref is passed on the CLI
 When  I run `cargo crap --format pr-comment`
@@ -109,7 +109,7 @@ Then  the renderer behaves as if `--repo-url https://github.com/owner/repo --com
 
 ### Scenario: CLI flags override env vars
 
-```
+```gherkin
 Given GITHUB_SHA=env_sha is set
 And   --commit-ref cli_sha is passed on the CLI
 When  the pr-comment renders
@@ -118,7 +118,7 @@ Then  link targets use `cli_sha`, not `env_sha`
 
 ### Scenario: Removed entries do not get links
 
-```
+```gherkin
 Given a baseline with a function that no longer exists on HEAD
 And   --repo-url and --commit-ref are set (pointing at HEAD)
 When  the pr-comment renders the `— N removed` section
@@ -127,7 +127,7 @@ Then  the removed function name is not wrapped in a markdown link
 
 ### Scenario: Hot-spots and Improved sections also get links
 
-```
+```gherkin
 Given --repo-url and --commit-ref are set
 When  the pr-comment renders Hot-spots and Improved sections
 Then  every Function cell in those sections is a markdown link
@@ -136,7 +136,7 @@ And   every Location cell in those sections is a markdown link
 
 ### Scenario: Markdown format also emits links
 
-```
+```gherkin
 Given --repo-url and --commit-ref are set
 When  I run `cargo crap --format markdown` (with or without --baseline)
 Then  Function and Location cells in the rendered table are markdown links
@@ -144,7 +144,7 @@ Then  Function and Location cells in the rendered table are markdown links
 
 ### Scenario: Other formats are unaffected
 
-```
+```gherkin
 Given --repo-url and --commit-ref are set
 When  I run `cargo crap --format json` (or `human`, `github`)
 Then  no markdown links appear in the output
@@ -169,7 +169,7 @@ repo_url: Option<String>,
 /// Commit SHA or branch name to deep-link into.
 #[arg(long, env = "CRAP_COMMIT_REF")]
 commit_ref: Option<String>,
-```
+```gherkin
 
 Defaults are resolved in `main` (not via clap `env`) because GitHub Actions
 exposes the repo as two separate vars (`GITHUB_SERVER_URL` +
@@ -228,7 +228,7 @@ fn linked(text: &str, links: Option<&SourceLinks>, file: &Path, line: u32) -> St
         None    => text.to_string(),
     }
 }
-```
+```gherkin
 
 Apply to both the backtick-wrapped Function name and the backtick-wrapped
 `{loc}:{line}` cell.

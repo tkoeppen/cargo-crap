@@ -33,7 +33,7 @@ so renderers can surface "X moved from a.rs to b.rs AND regressed."
 
 ### Scenario: Exact (file, function) match still wins
 
-```
+```gherkin
 Given a baseline entry at `src/foo.rs:bar` and a current entry at the same
       path with the same name
 When  compute_delta runs
@@ -45,7 +45,7 @@ And   status follows the existing epsilon-based rule
 
 ### Scenario: Single-name move pairs Removed + New into Moved
 
-```
+```gherkin
 Given a baseline entry at `src/old.rs:render`
 And   a current entry at `src/new.rs:render` with identical CC, coverage,
       and crap score
@@ -61,7 +61,7 @@ And   the breakdown line counts the function under `moved`, not under `new`
 
 ### Scenario: Move with score change keeps the score-status
 
-```
+```gherkin
 Given a baseline entry at `src/old.rs:render` with crap=5.0
 And   a current entry at `src/new.rs:render` with crap=12.0
 And   no other entry in either set is named `render`
@@ -76,7 +76,7 @@ And   renderers can compose "moved from <previous_file> to <current.file>"
 
 ### Scenario: Multiple unrelated moves all get paired when names are unique
 
-```
+```gherkin
 Given baseline entries `old/a.rs:foo` and `old/b.rs:bar`
 And   current entries `new/a.rs:foo` and `new/b.rs:bar`
 And   no name collisions
@@ -88,7 +88,7 @@ And   `removed` is empty
 
 ### Scenario: Ambiguous matches stay separate
 
-```
+```gherkin
 Given two baseline entries — `a.rs:helper` and `b.rs:helper` — and
 And   two current entries — `c.rs:helper` and `d.rs:helper`
 When  compute_delta runs
@@ -99,7 +99,7 @@ And   the two current entries are status `New` with `previous_file = None`
 
 ### Scenario: Genuinely new function (no baseline counterpart)
 
-```
+```gherkin
 Given a current entry whose name does not appear anywhere in the baseline
 When  compute_delta runs
 Then  status is `New` (unchanged behaviour)
@@ -108,7 +108,7 @@ And   `previous_file` is None
 
 ### Scenario: Genuinely removed function (no current counterpart)
 
-```
+```gherkin
 Given a baseline entry whose name does not appear anywhere in the current
       run
 When  compute_delta runs
@@ -117,7 +117,7 @@ Then  the function appears in `removed` (unchanged behaviour)
 
 ### Scenario: Pre-spec-13 baselines still load
 
-```
+```gherkin
 Given a baseline JSON file written by cargo-crap < 0.1.0
       (no `$schema` field pointing at delta-v2 — the file format itself
       hasn't changed; baselines store CrapEntry, not DeltaEntry)
@@ -134,7 +134,7 @@ And   compute_delta produces a current-format DeltaReport with `Moved`
 
 ### Scenario: Delta JSON output advertises schema v2 with `previous_file`
 
-```
+```gherkin
 Given any cargo-crap delta run
 When  the user runs `cargo crap --format json --baseline …`
 Then  the envelope's `$schema` field points at `delta-v2.json`
@@ -144,7 +144,7 @@ And   the `status` enum admits a new `"moved"` value
 
 ### Scenario: PR-comment renderer surfaces moves in a dedicated section
 
-```
+```gherkin
 Given a delta with at least one `Moved` entry (and no Regressed entries)
 When  the pr-comment renders
 Then  the headline is still `## ✅ No CRAP regressions`
@@ -157,7 +157,7 @@ And   each row reads `<icon> <crap> <cc> <cov%> <function>
 
 ### Scenario: Moved entries with score changes appear in their own bucket
 
-```
+```gherkin
 Given a delta with a function that moved AND regressed
 When  the pr-comment renders
 Then  the entry appears in the primary Regressed table
@@ -167,7 +167,7 @@ And   it is NOT also duplicated in the `↔ N moved` <details> block
 
 ### Scenario: --fail-regression treats Moved as non-regression
 
-```
+```gherkin
 Given a delta whose entries are all `Moved` (refactor PR)
 When  cargo crap runs with --fail-regression
 Then  the exit code is 0 (Moved is not a regression)
@@ -175,7 +175,7 @@ Then  the exit code is 0 (Moved is not a regression)
 
 ### Scenario: GitHub Actions annotations skip pure moves
 
-```
+```gherkin
 Given a delta with one `Moved` entry that did not regress
 When  cargo crap --format github runs
 Then  no `::warning` annotation is emitted for that entry
@@ -184,7 +184,7 @@ Then  no `::warning` annotation is emitted for that entry
 
 ### Scenario: Human / Markdown / Summary renderers update
 
-```
+```gherkin
 Given a delta with at least one Moved entry
 When  the human / markdown / summary renderers run
 Then  the status column / row icon distinguishes Moved from Unchanged
@@ -230,7 +230,7 @@ fn compute_delta(current, baseline, epsilon) -> DeltaReport {
     let removed = unmatched_baseline (still unpaired);
     DeltaReport { entries, removed }
 }
-```
+```gherkin
 
 Key invariants:
 - Pass 1 result is unchanged for exact matches.
@@ -279,6 +279,7 @@ this.
 ### JSON schema bump
 
 `schemas/delta-v2.json`:
+
 - New optional `previous_file: string` on each entry
 - `status` enum gains `"moved"` value
 - `report-v1.json` (the absolute envelope) is unchanged — `Moved` only

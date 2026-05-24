@@ -5,7 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
 ## [0.2.1] - 2026-05-21
 
 ### Fixed
@@ -41,7 +40,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   its diff pathspec so renamed/moved files in nested modules are picked
   up by mutation testing.
 
-
 ## [0.1.1] - 2026-05-08
 
 ### Changed
@@ -53,7 +51,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tuned crates.io keywords (`code-quality` swapped in for `crap`) for
   better discoverability.
 - Author metadata corrected in `Cargo.toml`.
-
 
 ## [0.1.0] - 2026-05-07
 
@@ -118,7 +115,6 @@ move-aware delta detection. Anchor for early-adopter use.
 Consumers reading `--format json --baseline ...` should switch to
 `schemas/delta-v2.json`. The v1 schema URL still resolves but new
 output points at v2.
-
 
 ## [0.0.1] - 2026-04-27
 

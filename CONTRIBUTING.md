@@ -2,8 +2,9 @@
 
 ## Development setup
 
-1. Install Rust (stable, 1.85+): https://rustup.rs
+1. Install Rust (stable, 1.85+): <https://rustup.rs>
 2. Clone the repository and build:
+
    ```bash
    cargo build --all-targets
    cargo test --all-targets

@@ -93,7 +93,7 @@ cargo crap --workspace --lcov lcov.info --summary
 
 Example output:
 
-```
+```text
 ┌───┬───────┬────┬───────────────────┬──────────┬───────────────┐
 │   │  CRAP │ CC │ Coverage          │ Function │ Location      │
 ╞═══╪═══════╪════╪═══════════════════╪══════════╪═══════════════╡
@@ -208,7 +208,7 @@ All keys are optional. Unknown keys are rejected to catch typos.
 The tool has six orthogonal modules. Each is testable in isolation; the
 join between them has its own integration test.
 
-```
+```text
   cargo llvm-cov                  syn
   (LCOV file)                 (Rust AST)
         │                         │

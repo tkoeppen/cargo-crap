@@ -47,7 +47,7 @@ cargo run --release -- --lcov lcov.info --workspace --exclude 'tests/fixtures/**
 
 The tool has six orthogonal modules that feed into a pipeline:
 
-```
+```text
 syn (Rust AST)                          LCOV file (cargo llvm-cov / tarpaulin)
          │                                        │
          ▼                                        ▼
@@ -83,6 +83,7 @@ syn (Rust AST)                          LCOV file (cargo llvm-cov / tarpaulin)
 **`src/coverage.rs`** — Parses LCOV files using the `lcov` crate. Only consumes `SF` (source file), `DA` (line data), and `end_of_record` records. Path normalization is deliberately absent here — that responsibility belongs to `merge`.
 
 **`src/merge.rs`** — The critical join layer. Uses `PathIndex` with two-level lookup:
+
 - **Fast path**: canonicalized absolute paths → direct hash lookup.
 - **Slow path**: component-wise suffix matching for relative LCOV paths (e.g., `src/foo.rs` matches `/home/alice/project/src/foo.rs`).
 - **Critical invariant**: relative paths are never canonicalized against CWD (regression test `relative_coverage_paths_are_not_resolved_against_cwd` pins this).
